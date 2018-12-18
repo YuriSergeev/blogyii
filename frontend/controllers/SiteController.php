@@ -2,6 +2,8 @@
 namespace frontend\controllers;
 
 use Yii;
+use common\models\Article;
+use common\models\Category;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
@@ -72,7 +74,18 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $data = Article::getAll(5);
+        $popular = Article::getPopular();
+        $recent = Article::getRecent();
+        $categories = Category::getAll();
+
+        return $this->render('index',[
+            'articles'=>$data['articles'],
+            'pagination'=>$data['pagination'],
+            'popular'=>$popular,
+            'recent'=>$recent,
+            'categories'=>$categories
+        ]);
     }
 
     /**
@@ -111,36 +124,44 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays contact page.
-     *
-     * @return mixed
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-                Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
-            } else {
-                Yii::$app->session->setFlash('error', 'There was an error sending your message.');
-            }
-
-            return $this->refresh();
-        } else {
-            return $this->render('contact', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
      * Displays about page.
      *
      * @return mixed
      */
-    public function actionAbout()
+    public function actionArticle($id)
     {
-        return $this->render('about');
+        $article = Article::findOne($id);
+        $popular = Article::getPopular();
+        $recent = Article::getRecent();
+        $categories = Category::getAll();
+        //$comments = $article->getArticleComments();
+        //$commentForm = new CommentForm();
+        $article->viewedCounter();
+
+        return $this->render('article',[
+            'article'=>$article,
+            'popular'=>$popular,
+            'recent'=>$recent,
+            'categories'=>$categories,
+            //'comments'=>$comments,
+            //'commentForm'=>$commentForm
+        ]);
+    }
+
+    public function actionCategory($id)
+    {
+       $data = Category::getArticlesByCategory($id);
+       $popular = Article::getPopular();
+       $recent = Article::getRecent();
+       $categories = Category::getAll();
+
+       return $this->render('category',[
+           'articles'=>$data['articles'],
+           'pagination'=>$data['pagination'],
+           'popular'=>$popular,
+           'recent'=>$recent,
+           'categories'=>$categories
+       ]);
     }
 
     /**

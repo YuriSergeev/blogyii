@@ -17,8 +17,8 @@ class m181215_214937_create_user_table extends Migration
             'name' => $this->string(),
             'email' => $this->string()->defaultValue(null),
             'password' => $this->string(),
-            'role' => $this->string()->defaultValue('User'),
             'photo' => $this->string()->defaultValue(null),
+            'access' => $this->boolean()->defaultValue(true),
         ]);
     }
 

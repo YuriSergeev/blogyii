@@ -16,9 +16,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
-
     <?= $form->field($model, 'image')->fileInput(['maxlength' => true]) ?>
+
+    <label>Category</label>
+    <?= Html::dropDownList('category', $selectedCategory, $categories, ['class' => 'form-control']) ?>
+
+    <label>Tags</label>
+    <?= Html::dropDownList('tags', $selectedTags, $tags, ['class'=>'form-control', 'multiple'=>true]) ?>
 
     <?= $form->field($model, 'date')->textInput() ?>
 

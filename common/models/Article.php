@@ -40,10 +40,11 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             [['title'], 'required'],
-            [['title', 'description', 'content'], 'string'],
+            [['title', 'description'], 'string'],
             [['date'], 'date', 'format' => 'php:Y-m-d'],
             [['date'], 'default', 'value' => date('Y-m-d')],
             [['title'], 'string', 'max' => 255],
+            [['image'], 'file', 'extensions' => 'jpg,png'],
         ];
     }
 
@@ -56,7 +57,6 @@ class Article extends \yii\db\ActiveRecord
             'id' => 'ID',
             'title' => 'Title',
             'description' => 'Description',
-            'content' => 'Content',
             'date' => 'Date',
             'image' => 'Image',
             'viewed' => 'Viewed',
@@ -116,7 +116,7 @@ class Article extends \yii\db\ActiveRecord
          $selectedIds = $this->getTags()->select('id')->asArray()->all();
          return ArrayHelper::getColumn($selectedIds, 'id');
     }
-    
+
     public function saveTags($tags)
     {
         if (is_array($tags))
@@ -133,6 +133,55 @@ class Article extends \yii\db\ActiveRecord
     public function clearCurrentTags()
     {
         ArticleTag::deleteAll(['article_id'=>$this->id]);
+    }
+
+    public static function getAll($pageSize = 5)
+    {
+        // build a DB query to get all articles
+        $query = Article::find();
+        // get the total number of articles (but do not fetch the article data yet)
+        $count = $query->count();
+        // create a pagination object with the total count
+        $pagination = new Pagination(['totalCount' => $count, 'pageSize'=>$pageSize]);
+        // limit the query using the pagination and retrieve the articles
+        $articles = $query->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        $data['articles'] = $articles;
+        $data['pagination'] = $pagination;
+
+        return $data;
+    }
+
+    public static function getPopular()
+    {
+        return Article::find()->orderBy('viewed desc')->limit(3)->all();
+    }
+
+    public static function getRecent()
+    {
+        return Article::find()->orderBy('date asc')->limit(4)->all();
+    }
+
+    public function getDate()
+    {
+        return Yii::$app->formatter->asDate($this->date);
+    }
+
+    public function getContent()
+    {
+        $description = substr($this->description, 0, 270);
+        $description = rtrim($description, "!,.-");
+        $description = substr($description, 0, strrpos($description, ' '));
+
+        return $description . "… ";
+    }
+
+    public function viewedCounter()
+    {
+        $this->viewed += 1;
+        return $this->save(false);
     }
 
 }
