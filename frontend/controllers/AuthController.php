@@ -11,16 +11,20 @@ class AuthController extends Controller
 
   public function actionLogin()
   {
-       if (!Yii::$app->user->isGuest) {
-           return $this->goHome();
-       }
-       $model = new LoginForm();
-       if ($model->load(Yii::$app->request->post()) && $model->login()) {
-           return $this->goBack();
-       }
-       return $this->render('login', [
-           'model' => $model,
-       ]);
+      if (!Yii::$app->user->isGuest) {
+          return $this->goHome();
+      }
+
+      $model = new LoginForm();
+      if ($model->load(Yii::$app->request->post()) && $model->login()) {
+          return $this->goBack();
+      } else {
+          $model->password = '';
+
+          return $this->render('login', [
+              'model' => $model,
+          ]);
+      }
    }
 
    public function actionLogout()
@@ -30,16 +34,18 @@ class AuthController extends Controller
    }
 
    public function actionSignup()
-   {
-       $model = new SignupForm();
-       if(Yii::$app->request->isPost)
-       {
-           $model->load(Yii::$app->request->post());
-           if($model->signup())
-           {
-               return $this->redirect(['auth/login']);
-           }
-       }
-       return $this->render('signup', ['model'=>$model]);
-   }
+    {
+        $model = new SignupForm();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($user = $model->signup()) {
+                if (Yii::$app->getUser()->login($user)) {
+                    return $this->goHome();
+                }
+            }
+        }
+
+        return $this->render('signup', [
+            'model' => $model,
+        ]);
+    }
 }

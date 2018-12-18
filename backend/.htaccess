@@ -1,4 +1,5 @@
 RewriteEngine on
+RewriteBase /admin
 # если это папка или файл, открываем его
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
