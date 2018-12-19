@@ -36,16 +36,19 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-    ];
 
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Category', 'url' => ['/category/index']];
-        $menuItems[] = ['label' => 'Tag', 'url' => ['/tag/index']];
+        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
+        if (Yii::$app->authManager->getRolesByUser(Yii::$app->user->identity->id))
+        {
+          $menuItems[] = ['label' => 'Admin', 'url' => ['/admin']];
+          $menuItems[] = ['label' => 'Article', 'url' => ['/article/index']];
+          $menuItems[] = ['label' => 'Category', 'url' => ['/category/index']];
+          $menuItems[] = ['label' => 'Tag', 'url' => ['/tag/index']];
+        }
         $menuItems[] = '<li>'
-            . Html::beginForm(['/auth/logout'], 'post')
+            . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
                 'Logout (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']

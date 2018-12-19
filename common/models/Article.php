@@ -184,4 +184,8 @@ class Article extends \yii\db\ActiveRecord
         return $this->save(false);
     }
 
+    public function getAuthor()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
 }

@@ -11,15 +11,17 @@ $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'i
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="article-update">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <h1><?= Html::encode($this->title) ?></h1>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <?= $this->render('_form', [
-        'tags'=>$tags,
-        'model' => $model,
-        'categories'=> $categories,
-        'selectedTags'=> $selectedTags,
-        'selectedCategory'=>$selectedCategory,
-    ]) ?>
-
+      <?= $this->render('_form', [
+          'tags'=>$tags,
+          'model' => $model,
+          'categories'=> $categories,
+          'selectedTags'=> $selectedTags,
+          'selectedCategory'=>$selectedCategory,
+      ]) ?>
+    </div>
+  </div>
 </div>

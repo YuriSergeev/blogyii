@@ -24,13 +24,14 @@ $this->title = 'Article';
                         <div class="entry-content">
                             <p><?= $article->description; ?></p>
                         </div>
-
-                        <div class="decoration">
-                            <a href="#" class="btn btn-default">Decoration</a>
-                        </div>
+                        <?php if(Yii::$app->user->identity->id == $article->user_id):?>
+                          <div class="decoration">
+                              <a href="<?= Url::toRoute(['/article/update', 'id' => $article->id])?>" class="btn btn-default">Update</a>
+                          </div>
+                        <?php endif;?>
 
                         <div class="social-share">
-							              <span class="social-share-title pull-left text-capitalize">By Rubel On <?= $article->getDate(); ?></span>
+							              <span class="social-share-title pull-left text-capitalize">By <?= ($article->author == null) ? '' : $article->author->username ?> On <?= $article->getDate(); ?></span>
                             <ul class="text-center pull-right">
                                 <li><a class="s-facebook" href="#"><i class="fa fa-facebook"></i></a></li>
                                 <li><a class="s-twitter" href="#"><i class="fa fa-twitter"></i></a></li>

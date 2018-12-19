@@ -55,7 +55,6 @@ BlogAsset::register($this);
                         <?php if(Yii::$app->user->isGuest):?>
                             <li><a href="<?= Url::toRoute(['/auth/login'])?>">Login</a></li>
                             <li><a href="<?= Url::toRoute(['/auth/signup'])?>">Register</a></li>
-                            <li><a href="">Admin</a></li>
                         <?php else: ?>
                             <li><a href="<?= Url::toRoute(['/article/create'])?>">Article</a></li>
                             <li><?= Html::beginForm(['/auth/logout'], 'post')

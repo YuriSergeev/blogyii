@@ -9,6 +9,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use common\models\LoginForm;
 
 /**
  * Site controller
@@ -64,7 +65,35 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('/site/index');
+        return $this->render('/site/login');
+    }
+
+    public function actionLogin()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            return $this->render('/site/login', [
+                'model' => $model,
+            ]);
+
+        } else {
+            $model->password = '';
+
+            return $this->render('/site/login', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+
+        return $this->goHome();
     }
 
     public function actionArticle()
